@@ -34,10 +34,17 @@ def build_res_block(in_channels, out_channels):
     )
 
 
-def build_base_resnet():
+def build_base_resnet(in_channels, out_channels, block, num_classes=100, perturb=False):
     res_layers = []
     res_layers += build_featurizer(3, 64)
+    res_layers += build_skip_connectors(block)
+    res_layers += [nn.AdaptiveAvgPool2d((1, 1))]
+    res_layers += [nn.Linear(512 * block.expansion, num_classes)]
 
+    if perturb:
+        pass
+
+    return nn.Sequential(*res_layers)
 
 
 class ResBlock(nn.Module):
