@@ -48,6 +48,8 @@ vgg_model.classifier[6] = nn.Sequential(
                       nn.Linear(256, num_classes),
                       nn.LogSoftmax(dim=1))
 
+vgg_model = model.to('cuda')
+
 print_params(vgg_model)
 trainingset, trainloader = load_data()
 
