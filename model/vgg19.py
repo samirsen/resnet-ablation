@@ -1,9 +1,8 @@
+# VGG 19 Model, Introducing random perturbations to layer activations
+# Author: Samir Sen, 2019 
+
 import torch
 import torch.nn as nn
-
-
-imagenet_pretrained = 'https://download.pytorch.org/models/vgg19-dcbb9e9d.pth'
-network_dims = [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
 
 
 def FullyConnected(in_channel, out_channel, num_classes):
