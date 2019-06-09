@@ -51,12 +51,11 @@ def build_featurizer(in_channel, out_channel):
         nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
     ]
 
-def build_base_resnet(in_channels=3, out_channels=64, num_classes=100, perturb=False):
+def build_base_resnet(in_channels=3, out_channels=64, num_classes=1000, perturb=False):
     res_layers = []
     res_layers += build_featurizer(in_channels, out_channels)
     res_layers += build_skip_connectors(out_channels, out_channels*2)
     res_layers += [nn.AdaptiveAvgPool2d((1, 1))]
-    res_layers += [nn.Linear(512, num_classes)]
 
     if perturb:
         pass
@@ -96,15 +95,17 @@ class ResBlock(nn.Module):
 
 
 class Resnet(nn.Module):
-    def __init__(self, num_classes=100, init_weight=False):
+    def __init__(self, num_classes=1000, init_weight=False):
         super(Resnet, self).__init__()
 
         self._resnet = build_base_resnet()
+        self.fc = nn.Linear(512, num_classes)
         if init_weight:
             self.init_weights()
 
     def forward(self, x):
         out = self._resnet(x)
+        out = self.fc(out)
 
         return out
 

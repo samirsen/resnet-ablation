@@ -36,7 +36,7 @@ def conv2x2(in_channels, out_channels):
         nn.MaxPool2d(kernel_size=2, stride=2)
     ]
 
-def build_base_vgg(in_channel=3, perturbation=None):
+def build_base_vgg(in_channel=3, perturb=None):
     vgg_layers = []
     vgg_layers += conv2x2(in_channel, 64)
     vgg_layers += conv2x2(64, 128)
@@ -44,14 +44,14 @@ def build_base_vgg(in_channel=3, perturbation=None):
     vgg_layers += conv4x4(256, 512)
     vgg_layers += conv4x4(512, 512)
 
-    if perturbation:
+    if perturb:
         pass
 
     return nn.Sequential(*vgg_layers)
 
 
 class VGG(nn.Module):
-    def __init__(self, num_classes=100, init_weight=False):
+    def __init__(self, num_classes=1000, init_weight=False):
         super(VGG, self).__init__()
 
         self._vgg = build_base_vgg()
