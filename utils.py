@@ -14,3 +14,6 @@ def load_model(model, arch='vgg'):
     model.load_state_dict(state_dict)
 
     return model
+
+def load_data():
+    pass 

@@ -14,6 +14,8 @@ def conv1x1(in_planes, out_planes, stride=1):
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 
+def build_skip_connectors(block):
+    pass 
 
 def build_featurizer(in_channel, out_channel):
     return [
@@ -74,10 +76,13 @@ class Resnet(nn.Module):
         super(Resnet, self).__init__()
 
         self._resnet = build_base_resnet()
+        if init_weight:
+            self.init_weights()
 
+    def forward(self, x):
+        out = self._resnet(x)
 
-        if init_weight: self.init_weights()
-
+        return out
 
 
     def init_weights(self):
