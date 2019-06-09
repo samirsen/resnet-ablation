@@ -41,7 +41,7 @@ for i, param in vgg_model.named_parameters():
 vgg_model.classifier[6] = nn.Sequential(
                       nn.Linear(512 * 7 * 7, 256),
                       nn.ReLU(),
-                      nn.Linear(256, n_classes),
+                      nn.Linear(256, num_classes),
                       nn.LogSoftmax(dim=1))
 
 print_params(vgg_model)
