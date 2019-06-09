@@ -1,5 +1,5 @@
 # VGG 19 Model, Introducing random perturbations to layer activations
-# Author: Samir Sen, 2019 
+# Author: Samir Sen, 2019
 
 import torch
 import torch.nn as nn
@@ -36,7 +36,7 @@ def conv2x2(in_channels, out_channels):
         nn.MaxPool2d(kernel_size=2, stride=2)
     ]
 
-def build_base_vgg(in_channel=3):
+def build_base_vgg(in_channel=3, perturbation=None):
     vgg_layers = []
     vgg_layers += conv2x2(in_channel, 64)
     vgg_layers += conv2x2(64, 128)
@@ -44,7 +44,10 @@ def build_base_vgg(in_channel=3):
     vgg_layers += conv4x4(256, 512)
     vgg_layers += conv4x4(512, 512)
 
-    return vgg_layers
+    if perturbation:
+        pass
+
+    return nn.Sequential(*vgg_layers)
 
 
 class VGG(nn.Module):

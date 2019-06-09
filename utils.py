@@ -4,11 +4,13 @@ try:
 except ImportError:
     from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
+pretrained_weights = {
+    'vgg': 'https://download.pytorch.org/models/vgg19-dcbb9e9d.pth',
+    'resnet': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth'
+}
 
-imagenet_pretrained = 'https://download.pytorch.org/models/vgg19-dcbb9e9d.pth'
-
-def load_model(model, weight_file=imagenet_pretrained):
-    state_dict = load_state_dict_from_url(weight_file, progress=True)
+def load_model(model, arch='vgg'):
+    state_dict = load_state_dict_from_url(pretrained_weights[arch], progress=True)
     model.load_state_dict(state_dict)
 
     return model
