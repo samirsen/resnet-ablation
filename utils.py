@@ -52,6 +52,8 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
+def load_model2(model):
+    return model
 
 def load_model(model, arch='vgg'):
     state_dict = load_state_dict_from_url(pretrained_weights[arch], progress=True)

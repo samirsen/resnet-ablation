@@ -28,8 +28,9 @@ use_cuda = torch.cuda.is_available()
 best_acc = 0
 num_classes = 100
 
-vgg = VGG()
-vgg_model = load_model(vgg, 'vgg')
+# vgg = VGG()
+vgg = models.vgg19(pretrained=True)
+vgg_model = load_model2(vgg)
 if use_cuda: vgg_model = vgg_model.cuda()
 
 print('   Total params: %.2fM' % (num_params(vgg)))
@@ -37,7 +38,11 @@ print('   Total params: %.2fM' % (num_params(vgg)))
 for i, param in vgg_model.named_parameters():
     param.requires_grad = False
 
-vgg_model.classifier = FullyConnected(512 * 7 * 7, 4096, num_classes)
+vgg_model.classifier[6] = nn.Sequential(
+                      nn.Linear(512 * 7 * 7, 256),
+                      nn.ReLU(),
+                      nn.Linear(256, n_classes),
+                      nn.LogSoftmax(dim=1))
 
 print_params(vgg_model)
 
