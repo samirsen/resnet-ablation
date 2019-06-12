@@ -39,6 +39,7 @@ Resnet34
 Next, we experimentally perturb each of the networks at inference time and observe the effects on validation accuracy and activations at the 2nd to last layer. Perturbation was a extension of the model's forward function. At each n Conv layers (experiment with n=1, 2, 3), we introduce Gaussian noise to the layer outputs with probability p. 
 
 N = 1 perturbed layers
+
 |  | Train Acc | Test Acc |
 | :---         |     :---:      |          ---: |
 | VGG19 (Serial)   | --     | 83.79    |
