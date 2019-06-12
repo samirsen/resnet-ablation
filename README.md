@@ -12,7 +12,7 @@ Resnet Training Loss
 <img width="400" height="250" alt="resnet_loss" src="https://user-images.githubusercontent.com/18583460/59377186-8f006a00-8d06-11e9-9f91-268dbc22a262.png"> 
 
 VGG19 Training Loss
-<img width="400" alt="cifar_loss" src="https://user-images.githubusercontent.com/18583460/59377966-23b79780-8d08-11e9-901b-2feaea2c7cda.png">
+<img width="400" height="250" alt="cifar_loss" src="https://user-images.githubusercontent.com/18583460/59377966-23b79780-8d08-11e9-901b-2feaea2c7cda.png">
 
 VGG19 Train/Val Accuracy
-<img width="400" alt="cifar_acc_vgg" src="https://user-images.githubusercontent.com/18583460/59378036-45b11a00-8d08-11e9-899a-410b61fd82a6.png">
+<img width="400" height="250" alt="cifar_acc_vgg" src="https://user-images.githubusercontent.com/18583460/59378036-45b11a00-8d08-11e9-899a-410b61fd82a6.png">
