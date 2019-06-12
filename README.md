@@ -36,7 +36,7 @@ Resnet34
 
 <img width="200" alt="Screen Shot 2019-06-12 at 12 11 08 PM" src="https://user-images.githubusercontent.com/18583460/59379993-f28d9600-8d0c-11e9-9aed-48eba69bed2c.png">
 
-Next, we experimentally perturb each of the networks at inference time and observe the effects on validation accuracy and activations at the 2nd to last layer. Perturbation was a extension of the model's forward function. At each n Conv layers (experiment with n=1, 2, 3), we introduce Gaussian noise to the layer outputs with probability p. 
+Next, we experimentally perturb each of the networks at inference time and observe the effects on validation accuracy and activations among the last layers. Perturbation was a extension of the model's forward function. At each n Conv layers (experiment with n=1, 2, 3), we introduce Gaussian noise to the layer outputs with probability p. 
 
 N = 1 perturbed layers
 
@@ -58,3 +58,5 @@ N = 3 Perturbed Layers
 | :---         |     :---:      |          ---: |
 | VGG19 (Serial)   | --     |  71.47  |
 | Resnet34     | --      | 82.85      |
+
+What we find is that the residual connections have allowed the Resnet34 architecture to be more robust to noise perturbations in its layers compared wit the fully serial VGG network. In future work, it will be interesting to observe various forms of perturbation (those which are relevant in human visual processing) and the effect on network activations and testing accuracy. 
