@@ -59,7 +59,7 @@ class VGG(nn.Module):
         self.classifier = FullyConnected(512 * 7 * 7, 4096, num_classes)
         if init_weight: self.init_weights()
 
-    def forward(self, x):
+    def forward(self, x, perturb=False):
         feats = self._vgg(x)
         pool = self.pooling(feats)
         out = self.classifier(out.view(out.size(0), -1))

@@ -103,7 +103,7 @@ class Resnet(nn.Module):
         if init_weight:
             self.init_weights()
 
-    def forward(self, x):
+    def forward(self, x, perturb=False):
         out = self._resnet(x)
         out = self.fc(out)
 

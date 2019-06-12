@@ -1,178 +1,126 @@
 import os
 import sys
-import torch
-import torchvision
-import torch.utils.data as data
+import time
+import math
+
+import numpy as np
+import torch.nn as nn
 import torch.nn.init as init
-from torch.autograd import Variable
-from torchvision import datasets, models, transforms
-import matplotlib.pyplot as plt
-try:
-    from torch.hub import load_state_dict_from_url
-except ImportError:
-    from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
-pretrained_weights = {
-    'vgg': 'https://download.pytorch.org/models/vgg19-dcbb9e9d.pth',
-    'resnet': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth'
-}
-
-transform_train = transforms.Compose([
-    transforms.RandomCrop(32, padding=4),
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-])
-
-transform_test = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-])
-
-def num_params(model):
-    return sum([p.numel() for p in model.parameters()])/1000000.0
+import skimage
+import skimage.io
+import skimage.transform
 
 
-def print_params(model):
-    for name, child in model.named_childeren():
-      for name_2, params in child.named_parameters():
-        print(name_2, params.requires_grad)
+def get_mean_and_std(dataset):
+    '''Compute the mean and std value of dataset.'''
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=2)
+    mean = torch.zeros(3)
+    std = torch.zeros(3)
+    print('==> Computing mean and std..')
+    for inputs, targets in dataloader:
+        for i in range(3):
+            mean[i] += inputs[:,i,:,:].mean()
+            std[i] += inputs[:,i,:,:].std()
+    mean.div_(len(dataset))
+    std.div_(len(dataset))
+    return mean, std
 
-def accuracy(output, target, topk=(1,)):
-    maxk = max(topk)
-    batch_size = target.size(0)
-
-    _, pred = output.topk(maxk, 1, True, True)
-    pred = pred.t()
-    correct = pred.eq(target.view(1, -1).expand_as(pred))
-
-    res = []
-    for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
-        res.append(correct_k.mul_(100.0 / batch_size))
-    return res
-
-def load_model2(model):
-    return model
-
-def load_model(model, arch='vgg'):
-    state_dict = load_state_dict_from_url(pretrained_weights[arch], progress=True)
-    model.load_state_dict(state_dict)
-
-    return model
-
-def load_data(Train=True, batch_size=128, download=True):
-    transform_fn = transform_train if Train else transform_test
-    dataset = datasets.CIFAR100(root='./data', train=Train, download=download, transform=transform_fn)
-    loader = data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
-
-    return dataset, loader
-
-def savefig(fname, dpi=None):
-    dpi = 150 if dpi == None else dpi
-    plt.savefig(fname, dpi=dpi)
-
-def plot_overlap(logger, names=None):
-    names = logger.names if names == None else names
-    numbers = logger.numbers
-    for _, name in enumerate(names):
-        x = np.arange(len(numbers[name]))
-        plt.plot(x, np.asarray(numbers[name]))
-    return [logger.title + '(' + name + ')' for name in names]
-
-class AverageMeter(object):
-    """Computes and stores the average and current value
-       Imported from https://github.com/pytorch/examples/blob/master/imagenet/main.py#L247-L262
-    """
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
-
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.avg = self.sum / self.count
-
-class Logger(object):
-    '''Save training process to log file with simple plot function.'''
-    def __init__(self, fpath, title=None, resume=False):
-        self.file = None
-        self.resume = resume
-        self.title = '' if title == None else title
-        if fpath is not None:
-            if resume:
-                self.file = open(fpath, 'r')
-                name = self.file.readline()
-                self.names = name.rstrip().split('\t')
-                self.numbers = {}
-                for _, name in enumerate(self.names):
-                    self.numbers[name] = []
-
-                for numbers in self.file:
-                    numbers = numbers.rstrip().split('\t')
-                    for i in range(0, len(numbers)):
-                        self.numbers[self.names[i]].append(numbers[i])
-                self.file.close()
-                self.file = open(fpath, 'a')
-            else:
-                self.file = open(fpath, 'w')
-
-    def set_names(self, names):
-        if self.resume:
-            pass
-        # initialize numbers as empty list
-        self.numbers = {}
-        self.names = names
-        for _, name in enumerate(self.names):
-            self.file.write(name)
-            self.file.write('\t')
-            self.numbers[name] = []
-        self.file.write('\n')
-        self.file.flush()
+def init_params(net):
+    '''Init layer parameters.'''
+    for m in net.modules():
+        if isinstance(m, nn.Conv2d):
+            init.kaiming_normal(m.weight, mode='fan_out')
+            if m.bias:
+                init.constant(m.bias, 0)
+        elif isinstance(m, nn.BatchNorm2d):
+            init.constant(m.weight, 1)
+            init.constant(m.bias, 0)
+        elif isinstance(m, nn.Linear):
+            init.normal(m.weight, std=1e-3)
+            if m.bias:
+                init.constant(m.bias, 0)
 
 
-    def append(self, numbers):
-        assert len(self.names) == len(numbers), 'Numbers do not match names'
-        for index, num in enumerate(numbers):
-            self.file.write("{0:.6f}".format(num))
-            self.file.write('\t')
-            self.numbers[self.names[index]].append(num)
-        self.file.write('\n')
-        self.file.flush()
+_, term_width = os.popen('stty size', 'r').read().split()
+term_width = int(term_width)
 
-    def plot(self, names=None):
-        names = self.names if names == None else names
-        numbers = self.numbers
-        for _, name in enumerate(names):
-            x = np.arange(len(numbers[name]))
-            plt.plot(x, np.asarray(numbers[name]))
-        plt.legend([self.title + '(' + name + ')' for name in names])
-        plt.grid(True)
+TOTAL_BAR_LENGTH = 65.
+last_time = time.time()
+begin_time = last_time
+def progress_bar(current, total, msg=None):
+    global last_time, begin_time
+    if current == 0:
+        begin_time = time.time()  # Reset for new bar.
 
-    def close(self):
-        if self.file is not None:
-            self.file.close()
+    cur_len = int(TOTAL_BAR_LENGTH*current/total)
+    rest_len = int(TOTAL_BAR_LENGTH - cur_len) - 1
 
-class LoggerMonitor(object):
-    '''Load and visualize multiple logs.'''
-    def __init__ (self, paths):
-        '''paths is a distionary with {name:filepath} pair'''
-        self.loggers = []
-        for title, path in paths.items():
-            logger = Logger(path, title=title, resume=True)
-            self.loggers.append(logger)
+    sys.stdout.write(' [')
+    for i in range(cur_len):
+        sys.stdout.write('=')
+    sys.stdout.write('>')
+    for i in range(rest_len):
+        sys.stdout.write('.')
+    sys.stdout.write(']')
 
-    def plot(self, names=None):
-        plt.figure()
-        plt.subplot(121)
-        legend_text = []
-        for logger in self.loggers:
-            legend_text += plot_overlap(logger, names)
-        plt.legend(legend_text, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        plt.grid(True)
+    cur_time = time.time()
+    step_time = cur_time - last_time
+    last_time = cur_time
+    tot_time = cur_time - begin_time
+
+    L = []
+    L.append('  Step: %s' % format_time(step_time))
+    L.append(' | Tot: %s' % format_time(tot_time))
+    if msg:
+        L.append(' | ' + msg)
+
+    msg = ''.join(L)
+    sys.stdout.write(msg)
+    for i in range(term_width-int(TOTAL_BAR_LENGTH)-len(msg)-3):
+        sys.stdout.write(' ')
+
+    # Go back to the center of the bar.
+    for i in range(term_width-int(TOTAL_BAR_LENGTH/2)+2):
+        sys.stdout.write('\b')
+    sys.stdout.write(' %d/%d ' % (current+1, total))
+
+    if current < total-1:
+        sys.stdout.write('\r')
+    else:
+        sys.stdout.write('\n')
+    sys.stdout.flush()
+
+
+def load_image(path):
+    # load image
+    img = skimage.io.imread(path)
+    img = img / 255.0
+    assert (0 <= img).all() and (img <= 1.0).all()
+    # print "Original Image Shape: ", img.shape
+    # we crop image from center
+    print("shape:", img.shape)
+    print("short:", img.shape[:2])
+    short_edge = min(img.shape[:2])
+    yy = int((img.shape[0] - short_edge) / 2)
+    xx = int((img.shape[1] - short_edge) / 2)
+    crop_img = img[yy: yy + short_edge, xx: xx + short_edge]
+    # resize to 224, 224
+    resized_img = skimage.transform.resize(crop_img, (224, 224))
+    return resized_img
+
+
+# returns the top1 string
+def print_prob(prob, file_path):
+    synset = [l.strip() for l in open(file_path).readlines()]
+
+    # print prob
+    pred = np.argsort(prob)[::-1]
+
+    # Get top1 label
+    top1 = synset[pred[0]]
+    print(("Top1: ", top1, prob[pred[0]]))
+    # Get top5 label
+    top5 = [(synset[pred[i]], prob[pred[i]]) for i in range(5)]
+    print(("Top5: ", top5))
+    return top1

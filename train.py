@@ -17,7 +17,7 @@ import torchvision
 from torchvision import datasets, models, transforms
 
 import numpy as np
-from utils import *
+from util import *
 from model.vgg19 import VGG, FullyConnected
 from model.resnet34 import Resnet
 
