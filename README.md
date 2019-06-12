@@ -26,7 +26,7 @@ We trained the models, reimplementing base PyTorch model classes and adding capa
 | VGG19 (Serial)   | 88.72     | 84.48    |
 | Resnet34     | 89.22       | 85.13      |
 
-We also visualize the activations of the unperturbed VGG19 and Resnet34 network upon training at the first several layers:
+We also visualize the activations of the unperturbed VGG19 and Resnet34 network upon training at the first several layers, which look similar:
 
 VGG19
 
