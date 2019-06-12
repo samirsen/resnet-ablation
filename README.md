@@ -9,7 +9,7 @@ Skip connections have been found to occur in the brain, as noted in http://vpnl.
 hierarchy. Therefore, incorporating recent empirical findings of bypass routes into the architectures of CNNs may (1) make CNNs more accurate models of the human visual system and (2) could advance our understanding regarding hypothesized benefits of specific architecture features such as bypass routes." We try to examine this hypothesis by introducing random layer perturbations in the VGG and Resnet Architectures and map the effect on inference results.
 
 Resnet Training Loss                                                                     
-<img width="400" height="250" alt="resnet_loss" src="https://user-images.githubusercontent.com/18583460/59377186-8f006a00-8d06-11e9-9f91-268dbc22a262.png"> 
+<img width="300" height="200" alt="resnet_loss" src="https://user-images.githubusercontent.com/18583460/59377186-8f006a00-8d06-11e9-9f91-268dbc22a262.png"> 
 
 VGG19 Training Loss
 
