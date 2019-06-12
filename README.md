@@ -30,8 +30,16 @@ We also visualize the activations of the unperturbed VGG19 and Resnet34 network 
 
 VGG19
 
-<img width="300" alt="Screen Shot 2019-06-12 at 12 10 45 PM" src="https://user-images.githubusercontent.com/18583460/59379919-c07c3400-8d0c-11e9-97c5-5da4763d006f.png">
+<img width="200" alt="Screen Shot 2019-06-12 at 12 10 45 PM" src="https://user-images.githubusercontent.com/18583460/59379919-c07c3400-8d0c-11e9-97c5-5da4763d006f.png">
 
 Resnet34
 
-<img width="300" alt="Screen Shot 2019-06-12 at 12 11 08 PM" src="https://user-images.githubusercontent.com/18583460/59379993-f28d9600-8d0c-11e9-9aed-48eba69bed2c.png">
+<img width="200" alt="Screen Shot 2019-06-12 at 12 11 08 PM" src="https://user-images.githubusercontent.com/18583460/59379993-f28d9600-8d0c-11e9-9aed-48eba69bed2c.png">
+
+Next, we experimentally perturb each of the networks at inference time and observe the effects on validation accuracy and activations at the 2nd to last layer. Perturbation was a extension of the model's forward function. At each n Conv layers (experiment with n=1, 2, 3), we introduce Gaussian noise to the layer outputs with probability p. 
+
+N = 1 perturbed layers
+  |  Test Acc |
+| :---             |          ---: |
+| VGG19 (Serial)    | 83.79    |
+| Resnet34        | 85.02      |
