@@ -60,3 +60,8 @@ N = 3 Perturbed Layers
 | Resnet34     | --      | 82.85      |
 
 What we find is that the residual connections have allowed the Resnet34 architecture to be more robust to noise perturbations in its layers compared wit the fully serial VGG network. In future work, it will be interesting to observe various forms of perturbation (those which are relevant in human visual processing) and the effect on network activations and testing accuracy. 
+
+# References
+1. http://vpnl.stanford.edu/papers/GrillSpectorKayWeiner-DeepLearningChaper2017.pdf
+2. https://github.com/pytorch/vision/blob/master/torchvision/
+3. https://codelabs.developers.google.com/codelabs/tensorflow-for-poets
