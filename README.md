@@ -44,3 +44,17 @@ N = 1 perturbed layers
 | :---         |     :---:      |          ---: |
 | VGG19 (Serial)   | --     | 83.79    |
 | Resnet34     | --      | 85.02      |
+
+N = 2 Perturbed layers
+
+|  | Train Acc | Test Acc |
+| :---         |     :---:      |          ---: |
+| VGG19 (Serial)   | --     | 78.26    |
+| Resnet34     | --      | 84.94      |
+
+N = 3 Perturbed Layers
+
+|  | Train Acc | Test Acc |
+| :---         |     :---:      |          ---: |
+| VGG19 (Serial)   | --     |  71.47  |
+| Resnet34     | --      | 82.85      |
