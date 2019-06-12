@@ -65,3 +65,5 @@ What we find is that the residual connections have allowed the Resnet34 architec
 1. http://vpnl.stanford.edu/papers/GrillSpectorKayWeiner-DeepLearningChaper2017.pdf
 2. https://github.com/pytorch/vision/blob/master/torchvision/
 3. https://www.tensorflow.org/guide/summaries_and_tensorboard
+4. https://github.com/yunjey/pytorch-tutorial/tree/master/tutorials/04-utils/tensorboard
+5. https://github.com/chengyangfu/pytorch-vgg-cifar10
