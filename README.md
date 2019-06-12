@@ -64,4 +64,4 @@ What we find is that the residual connections have allowed the Resnet34 architec
 # References
 1. http://vpnl.stanford.edu/papers/GrillSpectorKayWeiner-DeepLearningChaper2017.pdf
 2. https://github.com/pytorch/vision/blob/master/torchvision/
-3. https://codelabs.developers.google.com/codelabs/tensorflow-for-poets
+3. https://www.tensorflow.org/guide/summaries_and_tensorboard
