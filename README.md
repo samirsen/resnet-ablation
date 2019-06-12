@@ -19,7 +19,7 @@ VGG19 Train/Val Accuracy
 
 <img width="300" height="200" alt="cifar_acc_vgg" src="https://user-images.githubusercontent.com/18583460/59378036-45b11a00-8d08-11e9-899a-410b61fd82a6.png">
 
-We trained the models, reimplementing base PyTorch model classes and adding capabilities to perturb the models during inference layer-wise. As a baseline, we found the following train / validation accuracies in the network and saved the best model weights for each model. We see at the onset, the two models fair approximately similarly to each other. 
+We trained the models, reimplementing base PyTorch model classes and adding capabilities to perturb the models during inference layer-wise. To train the models, we used the imagenet pretrained weights to seed the network and froze the last several layers, adjusting the output dimensions to match the CIFAR dataset consisting of 10 classes. As a baseline, we found the following train / validation accuracies in the network and saved the best model weights for each model. We see at the onset, the two models fair approximately similarly to each other. 
 
 |  | Train Acc | Test Acc |
 | :---         |     :---:      |          ---: |
